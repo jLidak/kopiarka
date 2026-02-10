@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asystent Dokumentacji Medycznej</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #10b981;
+            --bg: #f3f4f6;
+            --surface: #ffffff;
+            --text: #1f2937;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: var(--surface);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 { margin: 0; font-size: 1.2rem; }
+
+        button {
+            cursor: pointer;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 15px;
+            font-weight: 600;
+            transition: transform 0.1s, opacity 0.1s;
+        }
+        button:active { transform: scale(0.98); }
+        button:hover { opacity: 0.9; }
+
+        .btn-nav { background: #4b5563; color: white; }
+        .btn-action { background: var(--primary); color: white; margin: 5px; }
+        .btn-word { background: var(--secondary); color: white; margin: 5px; font-size: 0.9rem;}
+        .btn-delete { background: #ef4444; color: white; margin-left: 10px; padding: 5px 10px; font-size: 0.8rem;}
+
+        /* Layout */
+        .container { display: flex; flex: 1; gap: 20px; overflow: hidden; }
+        .panel {
+            background: var(--surface);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-y: auto;
+        }
+
+        /* Panel Lewy - Przyciski */
+        .left-panel { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+        .section-title {
+            font-size: 0.9rem; text-transform: uppercase; color: #6b7280; margin-bottom: 10px; border-bottom: 1px solid #e5e7eb; padding-bottom: 5px;
+        }
+        .buttons-grid { display: flex; flex-wrap: wrap; }
+
+        /* Panel Prawy - Edytor tekstu */
+        .right-panel { flex: 1; display: flex; flex-direction: column; }
+        textarea {
+            flex: 1;
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+            resize: none;
+            font-family: monospace;
+            box-sizing: border-box;
+        }
+        .controls { margin-top: 10px; display: flex; justify-content: flex-end; gap: 10px; }
+
+        /* Widok Konfiguracji */
+        #config-view { display: none; }
+        .config-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; background: #eeffff; padding: 15px; border-radius: 8px;}
+        input, textarea.config-input { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+
+        /* Powiadomienie (Toast) */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 4px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 17px;
+        }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🏥 Asystent Opisów Medycznych</h1>
+    <button class="btn-nav" onclick="toggleView()">⚙️ Konfiguracja / Pulpit</button>
+</header>
+
+<div id="main-view" class="container">
+    <div class="left-panel panel">
+
+        <div>
+            <div class="section-title">Szybkie kopiowanie (Pojedyncze słowa)</div>
+            <div id="words-container" class="buttons-grid">
+            </div>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <div class="section-title">Generator Zaleceń (Dodaj do notatki)</div>
+            <div id="recs-container" class="buttons-grid">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="right-panel panel">
+        <div class="section-title">Edytor Zaleceń</div>
+        <textarea id="final-text" placeholder="Tutaj pojawią się wybrane zalecenia..."></textarea>
+        <div class="controls">
+            <button class="btn-nav" onclick="clearText()">Wyczyść</button>
+            <button class="btn-action" onclick="copyAll()">Kopiuj Całość</button>
+        </div>
+    </div>
+</div>
+
+<div id="config-view" class="container" style="flex-direction: column; overflow-y: auto;">
+    <div class="panel">
+        <h2>Edycja Pojedynczych Słów</h2>
+        <div class="input-group">
+            <input type="text" id="new-word-input" placeholder="Nowe słowo (np. Grzybica)">
+            <button class="btn-action" onclick="addWord()">Dodaj Słowo</button>
+        </div>
+        <div id="config-words-list"></div>
+    </div>
+
+    <div class="panel" style="margin-top: 20px;">
+        <h2>Edycja Zaleceń</h2>
+        <div class="input-group" style="flex-direction: column;">
+            <input type="text" id="new-rec-title" placeholder="Tytuł przycisku (np. SUCHA SKÓRA)">
+            <textarea id="new-rec-content" class="config-input" rows="3" placeholder="Treść zalecenia..."></textarea>
+            <button class="btn-action" onclick="addRec()">Dodaj Zalecenie</button>
+        </div>
+        <div id="config-recs-list"></div>
+    </div>
+</div>
+
+<div id="toast">Skopiowano do schowka!</div>
+
+<script>
+    // --- DANE DOMYŚLNE ---
+    const defaultWords = ["Balsam", "Oliwka", "Grzybica", "Zapalenie", "Kontrola", "Recepta"];
+    const defaultRecs = [
+        {
+            title: "SUCHA SKÓRA",
+            content: "OLIWKA - 1 x dziennie 100 g. zewnętrznie na całe ciało. Po wykorzystaniu całego olejku rozpocząć stosowanie balsamu do ciała.\nBALSAM - stosować po każdej kąpieli na osuszoną skórę 30g na całe ciało."
+        },
+        {
+            title: "GRZYBICA PAZNOKCI",
+            content: "MAŚĆ - na paznokcie 1 x dziennie 5 g maści, wcierać w płytkę paznokcia. Leczenie trwa ok. 1 rok – do czasu całkowitego zejścia chorej płytki."
+        }
+    ];
+
+    // --- INICJALIZACJA ---
+    let words = JSON.parse(localStorage.getItem('med_words')) || defaultWords;
+    let recs = JSON.parse(localStorage.getItem('med_recs')) || defaultRecs;
+
+    function saveData() {
+        localStorage.setItem('med_words', JSON.stringify(words));
+        localStorage.setItem('med_recs', JSON.stringify(recs));
+        render();
+        renderConfig();
+    }
+
+    // --- RENDEROWANIE (Rysowanie interfejsu) ---
+    function render() {
+        const wordsContainer = document.getElementById('words-container');
+        const recsContainer = document.getElementById('recs-container');
+
+        wordsContainer.innerHTML = '';
+        recsContainer.innerHTML = '';
+
+        // Render słów
+        words.forEach(word => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-word';
+            btn.innerText = word;
+            btn.onclick = () => copySingleWord(word);
+            wordsContainer.appendChild(btn);
+        });
+
+        // Render zaleceń
+        recs.forEach((rec, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-action';
+            btn.innerText = rec.title;
+            btn.onclick = () => appendRecommendation(index);
+            recsContainer.appendChild(btn);
+        });
+    }
+
+    function renderConfig() {
+        const listWords = document.getElementById('config-words-list');
+        const listRecs = document.getElementById('config-recs-list');
+
+        listWords.innerHTML = '';
+        listRecs.innerHTML = '';
+
+        // Lista konfiguracyjna słów
+        words.forEach((word, index) => {
+            const div = document.createElement('div');
+            div.className = 'config-item';
+            div.innerHTML = `<span>${word}</span> <button class="btn-delete" onclick="deleteWord(${index})">Usuń</button>`;
+            listWords.appendChild(div);
+        });
+
+        // Lista konfiguracyjna zaleceń
+        recs.forEach((rec, index) => {
+            const div = document.createElement('div');
+            div.className = 'config-item';
+            div.innerHTML = `
+                    <div>
+                        <strong>${rec.title}</strong><br>
+                        <small style="color:#666">${rec.content.substring(0, 50)}...</small>
+                    </div>
+                    <button class="btn-delete" onclick="deleteRec(${index})">Usuń</button>
+                `;
+            listRecs.appendChild(div);
+        });
+    }
+
+    // --- LOGIKA BIZNESOWA ---
+
+    // 1. Kopiowanie pojedynczego słowa
+    function copySingleWord(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast(`Skopiowano: "${text}"`);
+        });
+    }
+
+    // 2. Dodawanie zalecenia do pola tekstowego
+    function appendRecommendation(index) {
+        const textArea = document.getElementById('final-text');
+        const rec = recs[index];
+
+        let textToAdd = "";
+
+        // Jeśli pole nie jest puste, dodaj odstęp (nowe linie)
+        if (textArea.value.trim().length > 0) {
+            textToAdd += "\n\n";
+        }
+
+        textToAdd += `${rec.title}\n${rec.content}`;
+
+        textArea.value += textToAdd;
+        // Przewiń na dół
+        textArea.scrollTop = textArea.scrollHeight;
+    }
+
+    // 3. Kopiowanie całości z pola tekstowego
+    function copyAll() {
+        const textArea = document.getElementById('final-text');
+        if (!textArea.value) return;
+
+        navigator.clipboard.writeText(textArea.value).then(() => {
+            showToast("Skopiowano całe zalecenie!");
+        });
+    }
+
+    function clearText() {
+        if(confirm("Czy na pewno wyczyścić pole edycji?")) {
+            document.getElementById('final-text').value = '';
+        }
+    }
+
+    // --- ZARZĄDZANIE KONFIGURACJĄ ---
+
+    function toggleView() {
+        const mainView = document.getElementById('main-view');
+        const configView = document.getElementById('config-view');
+
+        if (mainView.style.display === 'none') {
+            mainView.style.display = 'flex';
+            configView.style.display = 'none';
+        } else {
+            mainView.style.display = 'none';
+            configView.style.display = 'flex';
+            renderConfig();
+        }
+    }
+
+    function addWord() {
+        const input = document.getElementById('new-word-input');
+        const val = input.value.trim();
+        if (val) {
+            words.push(val);
+            input.value = '';
+            saveData();
+        }
+    }
+
+    function deleteWord(index) {
+        words.splice(index, 1);
+        saveData();
+    }
+
+    function addRec() {
+        const titleInput = document.getElementById('new-rec-title');
+        const contentInput = document.getElementById('new-rec-content');
+
+        if (titleInput.value.trim() && contentInput.value.trim()) {
+            recs.push({
+                title: titleInput.value.trim(),
+                content: contentInput.value.trim()
+            });
+            titleInput.value = '';
+            contentInput.value = '';
+            saveData();
+        } else {
+            alert("Wypełnij tytuł i treść!");
+        }
+    }
+
+    function deleteRec(index) {
+        if(confirm("Usunąć to zalecenie?")) {
+            recs.splice(index, 1);
+            saveData();
+        }
+    }
+
+    // --- UTILS ---
+    function showToast(message) {
+        const x = document.getElementById("toast");
+        x.innerText = message;
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    }
+
+    // Start
+    render();
+</script>
+</body>
+</html>
