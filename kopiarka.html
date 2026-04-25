@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asystent Medyczny - Dark Mode</title>
+    <title>Asystent Medyczny - Dark Mode v8</title>
     <style>
         :root {
-            /* Główna paleta kolorów dla trybu ciemnego */
-            --primary: #3b82f6;      /* Jasny niebieski */
+            --primary: #3b82f6;
             --primary-hover: #60a5fa;
-            --secondary: #10b981;    /* Jasny zielony */
-            --purple: #8b5cf6;       /* Jasny fioletowy */
-            --bg: #111827;           /* Bardzo ciemny szary (tło strony) */
-            --surface: #1f2937;      /* Ciemny szary (tło paneli) */
-            --text: #f3f4f6;         /* Prawie biały (tekst główny) */
-            --text-muted: #9ca3af;   /* Szary tekst (opisy, nieaktywne taby) */
-            --border: #374151;       /* Kolor obramowań */
-            --danger: #ef4444;       /* Czerwony */
+            --secondary: #10b981;
+            --purple: #8b5cf6;
+            --bg: #111827;
+            --surface: #1f2937;
+            --text: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border: #374151;
+            --danger: #ef4444;
         }
 
         body {
@@ -30,10 +29,9 @@
             height: 100vh;
             box-sizing: border-box;
             overflow: hidden;
-            color-scheme: dark; /* Wymusza ciemne suwaki przewijania */
+            color-scheme: dark;
         }
 
-        /* Pasek górny (Konfiguracja) */
         .top-bar {
             display: flex;
             justify-content: flex-end;
@@ -55,7 +53,6 @@
         .btn-nav { background: #374151; color: white; font-size: 0.8rem; padding: 6px 12px; }
         .btn-nav:hover { background: #4b5563; }
 
-        /* Przyciski Główne (Zalecenia) */
         .btn-action { 
             background: var(--primary); 
             color: white; 
@@ -65,7 +62,6 @@
             max-width: 100%;
         }
 
-        /* Przyciski Wywiadu */
         .btn-interview {
             background: var(--purple);
             color: white;
@@ -73,20 +69,18 @@
             text-align: left;
         }
 
-        /* Szybkie słowa */
         .btn-word { background: var(--secondary); color: white; margin: 0; font-size: 0.85rem;}
         
-        /* Przyciski funkcyjne (Wyczyść / Kopiuj) */
         .action-bar {
             display: flex;
             gap: 10px;
             padding: 10px;
-            background: #111827; /* Ciemniejsze tło nad edytorem */
+            background: #111827;
             border-bottom: 1px solid var(--border);
         }
 
         .btn-tool {
-            flex: 1; /* 50% szerokości */
+            flex: 1;
             text-align: center;
             justify-content: center;
             padding: 10px;
@@ -96,7 +90,6 @@
         .btn-clear { background: #4b5563; color: white; }
         .btn-clear:hover { background: var(--danger); }
 
-        /* Konfiguracja - przyciski edycji */
         .btn-edit { background: #451a03; color: #fbbf24; padding: 4px 8px; font-size: 0.75rem; border: 1px solid #78350f; margin-right: 5px; }
         .btn-edit:hover { background: #78350f; color: white; }
         
@@ -105,19 +98,29 @@
         
         .btn-cancel { background: #4b5563; color: white; margin-right: 10px; display: none; }
 
-        /* --- LAYOUT GŁÓWNY --- */
+        /* Nowy przycisk ze strzałką do sortowania */
+        .btn-icon {
+            background: #374151;
+            color: white;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            margin-right: 3px;
+            border: 1px solid var(--border);
+        }
+        .btn-icon:hover:not(:disabled) { background: #4b5563; }
+        .btn-icon:disabled { opacity: 0.3; cursor: not-allowed; }
+
         .container { display: flex; flex: 1; gap: 10px; overflow: hidden; height: 100%; }
         
         .panel {
             background: var(--surface);
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3); /* Mocniejszy cień dla głębi */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
 
-        /* PANEL LEWY i PRAWY - 50% szerokości */
         .split-panel {
             flex: 1;
             display: flex;
@@ -140,10 +143,10 @@
 
         .panel-header {
             padding: 8px 12px;
-            background: #111827; /* Zmiana na ciemne tło */
+            background: #111827;
             border-bottom: 1px solid var(--border);
             font-weight: bold;
-            color: var(--text-muted); /* Lekko wyszarzony nagłówek */
+            color: var(--text-muted);
             font-size: 0.85rem;
             display: flex;
             justify-content: space-between;
@@ -156,20 +159,37 @@
             flex: 1;
         }
 
-        /* Kontener na przyciski (Flex wrap dla kafelków) */
+        /* KATEGORIE ZALECEŃ */
+        .category-header {
+            display: flex;
+            align-items: center;
+            margin: 10px 0 8px 0;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .category-header:first-child { margin-top: 0; }
+        .category-header span { margin-right: 10px; }
+        .category-header hr {
+            flex: 1;
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 0;
+        }
+
         .buttons-grid {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
             align-content: flex-start;
+            margin-bottom: 15px; 
         }
 
-        /* TABSY (Przełącznik) */
         .tabs { display: flex; background: #111827; padding: 2px; border-radius: 6px; margin: 5px 0; border: 1px solid var(--border); }
         .tab { flex: 1; text-align: center; padding: 6px; cursor: pointer; font-size: 0.9rem; border-radius: 4px; color: var(--text-muted); font-weight: 600; }
         .tab.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
 
-        /* Edytor tekstu */
         textarea.editor {
             flex: 1;
             width: 100%;
@@ -182,24 +202,24 @@
             background-color: var(--surface);
             color: var(--text);
         }
-        textarea.editor:focus { outline: none; background: #1f2937; } /* Zostaje taki sam by nie razić po oczach */
+        textarea.editor:focus { outline: none; background: #1f2937; }
 
-        /* --- KONFIGURACJA --- */
+        /* KONFIGURACJA */
         #config-view { display: none; }
         .config-col-left { flex: 0 0 300px; }
         .config-col-right { flex: 1; }
         
-        /* Ciemne formularze */
         .add-form {
             padding: 10px;
-            background: #1e3a8a33; /* Transparentny niebieski */
+            background: #1e3a8a33;
             border-bottom: 1px solid #1e3a8a;
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-        .add-form.editing { background: #b4530933; border-bottom: 1px solid #b45309; } /* Transparentny pomarańczowy */
-        .add-form.interview-mode { background: #6b21a833; border-bottom: 1px solid #6b21a8; } /* Transparentny fiolet */
+        .add-form.editing { background: #b4530933; border-bottom: 1px solid #b45309; }
+        .add-form.interview-mode { background: #6b21a833; border-bottom: 1px solid #6b21a8; }
+        .add-form.cats-mode { background: #064e3b33; border-bottom: 1px solid #064e3b; }
 
         input, textarea.config-input, select {
             padding: 8px;
@@ -208,7 +228,7 @@
             font-family: inherit;
             width: 100%;
             box-sizing: border-box;
-            background-color: #374151; /* Ciemne pola tekstowe */
+            background-color: #374151;
             color: var(--text);
         }
         input:focus, textarea.config-input:focus, select:focus {
@@ -232,8 +252,8 @@
         
         .badge-rec { background: #1e3a8a; color: #bfdbfe; }
         .badge-int { background: #581c87; color: #e9d5ff; }
+        .badge-cat { background: #064e3b; color: #a7f3d0; }
 
-        /* Toast - odwrócone kolory (jasne na ciemnym interfejsie) */
         #toast {
             visibility: hidden;
             min-width: 200px;
@@ -268,7 +288,7 @@
             
             <div class="sub-panel fixed-height">
                 <div class="panel-header">Szybkie słowa</div>
-                <div class="panel-content buttons-grid" id="words-container"></div>
+                <div class="panel-content buttons-grid" id="words-container" style="margin-bottom: 0;"></div>
             </div>
 
             <div class="sub-panel">
@@ -279,9 +299,9 @@
                     </div>
                 </div>
                 
-                <div class="panel-content buttons-grid" id="recs-container">
+                <div class="panel-content" id="recs-container">
                     </div>
-                <div class="panel-content buttons-grid" id="int-container" style="display: none;">
+                <div class="panel-content buttons-grid" id="int-container" style="display: none; margin-bottom: 0;">
                     </div>
             </div>
         </div>
@@ -309,7 +329,7 @@
         </div>
 
         <div class="panel config-col-right">
-            <div class="panel-header">Treści (Zalecenia i Wywiady)</div>
+            <div class="panel-header">Zarządzanie Treściami</div>
             
             <div class="add-form" id="content-form">
                 <div style="display:flex; justify-content: space-between; margin-bottom: 5px;">
@@ -317,11 +337,15 @@
                     <select id="content-type-select" onchange="changeConfigType()" style="width: auto; padding: 2px;">
                         <option value="recs">Zalecenia</option>
                         <option value="int">Wywiady</option>
+                        <option value="cats">Kategorie Zaleceń</option>
                     </select>
                 </div>
 
-                <input type="text" id="new-content-title" placeholder="Tytuł przycisku (np. Pacjent Chodzący)">
-                <textarea id="new-content-body" class="config-input" rows="3" placeholder="Treść do wklejenia..."></textarea>
+                <input type="text" id="new-content-title" placeholder="Tytuł / Nazwa">
+                
+                <select id="new-content-category" style="margin-top:5px;"></select>
+                
+                <textarea id="new-content-body" class="config-input" rows="3" placeholder="Treść do wklejenia..." style="margin-top:5px;"></textarea>
                 
                 <div style="display:flex; justify-content: flex-end; margin-top:5px;">
                     <button class="btn-cancel" id="btn-cancel-content" onclick="cancelEditContent()">Anuluj</button>
@@ -336,60 +360,83 @@
     <div id="toast">Skopiowano!</div>
 
     <script>
-        // --- DANE DOMYŚLNE (BAZA v3) ---
-        const defaultWords = ["BALSAM","BORNY","ZACZERWIENIENIA","NATŁUSZCZAJĄCA","OLIWKA","PAZNOKCI","GRZYBICA","ŚWIĄD","MOCZNIK","P/BÓL","ZAPARCIA","HEMOROIDY","TOALET","SYROP"];
+        // --- DANE DOMYŚLNE (BAZA v8) ---
+        const defaultWords = ["BALSAM","BORNY","ZACZERWIENIENIA","NATŁUSZCZAJĄCA","OLIWKA","PAZNOKCI","GRZYBICA","ŚWIĄD","MOCZNIK","P/BÓL","ZAPARCIA","HEMOROIDY","TOALET","SYROP","z tendencją do pękania","z tendencją do łuszczenia"];
         
+        const defaultCategories = [
+            { id: "cat_naj", name: "⭐ Najczęstsze" },
+            { id: "cat_grz", name: "Grzybica" },
+            { id: "cat_bol", name: "Ból" },
+            { id: "cat_inne", name: "Inne" }
+        ];
+
         const defaultRecs = [
-            {"title":"PAMPERSOWANI ODPARZENIA","content":"SKÓRA + ODPARZENIA\n- BALSAM  - stosować po każdej kąpieli na osuszoną skórę 30g na całe ciało.\n- KWAS BORNY - stosować 2 raz dziennie 40g do przemywania odparzenia każdorazowo przed zastosowaniem maści na zaczerwienienia oraz maści natłuszczającej do wyczerpania płynu.\n- MAŚĆ NA ZACZERWIENIENIA - maść stosować 4 razy dziennie 5g na dokładnie przemytą skórę. Maść stosować i w całości wykorzystać przed rozpoczęciem stosowania maści natłuszczającej w celu leczenia oraz zapobieżenia powstawaniu zaczerwienień i odparzeń skóry.\n- MAŚĆ NATŁUSZCZAJĄCA - na dokładnie przemytą skórę (najlepiej mydłem potasowym) nakładać 2 razy dziennie po 5-7 g w pachwinach i pod fałdami skórnymi podatnymi na odparzenia oraz pod pieluchę.\n!!! Zaczerwienione pachwiny/fałdy skórne oddzielać jałowym gazikiem !!!"},
-            {"title":"PAMPERSOWANI ZDROWI","content":"SKÓRA\n- BALSAM  - stosować po każdej kąpieli na osuszoną skórę 30g na całe ciało.\n- MAŚĆ NA ZACZERWIENIENIA - maść stosować 2 razy dziennie 5g na dokładnie przemytą skórę. Maść stosować i w całości wykorzystać przed rozpoczęciem stosowania maści natłuszczającej w celu leczenia oraz zapobieżenia powstawaniu zaczerwienień i odparzeń skóry.\n- MAŚĆ NATŁUSZCZAJĄCA - na dokładnie przemytą skórę (najlepiej mydłem potasowym) nakładać 2 razy dziennie po 5-7 g w pachwinach i pod fałdami skórnymi podatnymi na odparzenia oraz pod pieluchę."},
-            {"title":"SUCHA SKÓRA","content":"SUCHA SKÓRA\nOLIWKA - 1 x dziennie 100 g. zewnętrznie na całe ciało. Po wykorzystaniu całego olejku rozpocząć stosowanie balsamu do ciała.\nBALSAM - stosować po każdej kąpieli na osuszoną skórę 30g na całe ciało."},
-            {"title":"GRZYBICA PAZNOKCI","content":"GRZYBICA PAZNOKCI maść - na paznokcie 1 x dziennie 5 g maści, wcierać w płytkę paznokcia. Leczenie trwa ok. 1 rok – do czasu całkowitego zejścia chorej płytki."},
-            {"title":"PAMPERSOWANI (bez suchej)","content":"SKÓRA\n- MAŚĆ NA ZACZERWIENIENIA - maść stosować 2 razy dziennie 5g na dokładnie przemytą skórę. Maść stosować i w całości wykorzystać przed rozpoczęciem stosowania maści natłuszczającej w celu leczenia oraz zapobieżenia powstawaniu zaczerwienień i odparzeń skóry.\n- MAŚĆ NATŁUSZCZAJĄCA - na dokładnie przemytą skórę (najlepiej mydłem potasowym) nakładać 2 razy dziennie po 5-7 g w pachwinach i pod fałdami skórnymi podatnymi na odparzenia oraz pod pieluchę."},
-            {"title":"ZAPARCIA","content":"ZAPARCIA - syrop na zaparcia - 15g p.o 2 razy dziennie (ZMIESZAĆ PRZED UŻYCIEM)"},
-            {"title":"HEMOROIDY","content":"CZOPKI NA HEMOROIDY - 1x1 czopek doodbytniczo na noc"},
-            {"title":"GRZYBICA SKÓRY","content":"MAŚĆ NA GRZYBICĘ SKÓRY LEKKA - 2 razy dziennie 7 g zewn. na zmiany grzybicze na skórze"},
-            {"title":"M P/BÓLOWA","content":"MAŚĆ PRZECIWBÓLOWA - 2 razy dzienne wcierać 5 g zew. na obolałe miejsce"},
-            {"title":"TOALETA OCZU","content":"PŁYN DO TOALETY OCZU - 2 razy dziennie zew. 10 g, do przemywania okolic oka"},
-            {"title":"SUCHE USTA","content":"BALSAM POPĘKANE SUCHE USTA - 6 x dziennie po 4 g. zewn. na usta"},
-            {"title":"SYROP P/BÓL","content":"Syrop p/bólowy – 2x dziennie 5g rano i wieczorem doustnie\n! UWAGA ! To syrop z opioidem - nie łączyć z tramadolem, np. Skudexa, Exbol, Doreta, Poltram Combo"},
-            {"title":"ŚWIĄD","content":"MAŚĆ NA ŚWIĄD - 2-3 razy dziennie 3 gramy na zmiany skórne do czasu ustąpienia zmian, przez max. 3 miesiące"}
+            {"title":"PAMPERSOWANI ODPARZENIA","category":"cat_naj","content":"SKÓRA + ODPARZENIA\n- BALSAM  - stosować po każdej kąpieli na osuszoną skórę 30g na całe ciało.\n- KWAS BORNY - stosować 2 raz dziennie 40g do przemywania odparzenia każdorazowo przed zastosowaniem maści na zaczerwienienia oraz maści natłuszczającej do wyczerpania płynu.\n- MAŚĆ NA ZACZERWIENIENIA - maść stosować 2 razy dziennie 5g na dokładnie przemytą skórę w miejscach podatnych na odparzenia, np. pod pampersem. Maść stosować i w całości wykorzystać przed rozpoczęciem stosowania maści natłuszczającej w celu leczenia oraz zapobieżenia powstawaniu zaczerwienień i odparzeń skóry.\n- MAŚĆ NATŁUSZCZAJĄCA - na dokładnie przemytą skórę (najlepiej mydłem potasowym) nakładać 2 razy dziennie po 5-7 g w pachwinach i pod fałdami skórnymi podatnymi na odparzenia oraz pod pieluchę.\n!!! Zaczerwienione pachwiny/fałdy skórne oddzielać jałowym gazikiem !!!\n"},
+            {"title":"PAMPERSOWANI ZDROWI","category":"cat_naj","content":"SKÓRA\n- BALSAM  - stosować po każdej kąpieli na osuszoną skórę 30g na całe ciało.\n- MAŚĆ NA ZACZERWIENIENIA - maść stosować 2 razy dziennie 5g na dokładnie przemytą skórę w miejscach podatnych na odparzenia, np. pod pampersem. Maść stosować i w całości wykorzystać przed rozpoczęciem stosowania maści natłuszczającej w celu leczenia oraz zapobieżenia powstawaniu zaczerwienień i odparzeń skóry.\n- MAŚĆ NATŁUSZCZAJĄCA - na dokładnie przemytą skórę (najlepiej mydłem potasowym) nakładać 2 razy dziennie po 5-7 g w pachwinach i pod fałdami skórnymi podatnymi na odparzenia oraz pod pieluchę.\n"},
+            {"title":"SUCHA SKÓRA","category":"cat_naj","content":"SUCHA SKÓRA\nOLIWKA - 1 x dziennie 100 g. zewnętrznie na całe ciało. Po wykorzystaniu całego olejku rozpocząć stosowanie balsamu do ciała.\nBALSAM - stosować po każdej kąpieli na osuszoną skórę 30g na całe ciało.\n"},
+            {"title":"GRZYBICA PAZNOKCI","category":"cat_grz","content":"GRZYBICA PAZNOKCI maść - na paznokcie 1 x dziennie 5 g maści, wcierać w płytkę paznokcia. Leczenie trwa ok. 1 rok – do czasu całkowitego zejścia chorej płytki.\n"},
+            {"title":"PAMPERSOWANI (bez suchej)","category":"cat_naj","content":"SKÓRA\n- MAŚĆ NA ZACZERWIENIENIA - maść stosować 2 razy dziennie 5g na dokładnie przemytą skórę w miejscach podatnych na odparzenia, np. pod pampersem. Maść stosować i w całości wykorzystać przed rozpoczęciem stosowania maści natłuszczającej w celu leczenia oraz zapobieżenia powstawaniu zaczerwienień i odparzeń skóry.\n- MAŚĆ NATŁUSZCZAJĄCA - na dokładnie przemytą skórę (najlepiej mydłem potasowym) nakładać 2 razy dziennie po 5-7 g w pachwinach i pod fałdami skórnymi podatnymi na odparzenia oraz pod pieluchę.\n"},
+            {"title":"ZAPARCIA","category":"cat_inne","content":"ZAPARCIA - syrop na zaparcia - 15g p.o 2 razy dziennie (ZMIESZAĆ PRZED UŻYCIEM)\n"},
+            {"title":"HEMOROIDY","category":"cat_inne","content":"CZOPKI NA HEMOROIDY - 1x1 czopek doodbytniczo na noc"},
+            {"title":"GRZYBICA SKÓRY (MOCNA)","category":"cat_grz","content":"MAŚĆ NA GRZYBICĘ SKÓRY - 2 razy dziennie 5 g zewn. na zmiany grzybicze na skórze \n"},
+            {"title":"M P/BÓLOWA","category":"cat_bol","content":"MAŚĆ PRZECIWBÓLOWA - 2 razy dzienne wcierać 5 g zew. na obolałe miejsce"},
+            {"title":"TOALETA OCZU","category":"cat_inne","content":"PŁYN DO TOALETY OCZU - 2 razy dziennie zew. 10 g, do przemywania okolic oka\n"},
+            {"title":"SUCHE USTA","category":"cat_inne","content":"BALSAM POPĘKANE SUCHE USTA - 6 x dziennie po 4 g. zewn. na usta"},
+            {"title":"SYROP P/BÓL","category":"cat_bol","content":"SYROP PRZECIWBÓLOWY (metamizol 0,12mg/g, kodeina 4,8mg/g ) – 2x dziennie 5g rano i wieczorem doustnie\n! UWAGA ! To syrop z opioidem - nie łączyć z tramadolem, np. Skudexa, Exbol, Doreta, Poltram Combo"},
+            {"title":"ŚWIĄD","category":"cat_inne","content":"MAŚĆ NA ŚWIĄD - 2-3 razy dziennie 3 gramy na zmiany skórne do czasu ustąpienia zmian, przez max. 3 miesiące\n\nJeśli po 2 dniach stosowania powyższych zaleceń świąd nie zacznie przechodzić, zacząć stosować syrop na świąd:\n\nSYROP NA ŚWIĄD - 3 razy dziennie 5 g p.o. (wstrząsnąć przed użyciem), ma działanie usypiające, najlepiej stosować wieczorem i w razie potrzeby dawkę powtórzyć rano/w południe\n"},
+            {"title":"PŁYN DO PĘDZLOWANIA JAMY USTNEJ","category":"cat_inne","content":"PŁYN DO PĘDZLOWANIA JAMY USTNEJ/AFTY/GRZYBICA/ZAPALENIE - 3x dziennie 5g - pędzlować jamę ustną przez 7 dni"},
+            {"title":"PŁYN NA GRZYBICĘ OWŁOSIONEJ SKÓRY","category":"cat_grz","content":"PŁYN NA GRZYBICĘ OWŁOSIONEJ SKÓRY - 2 x dziennie 7 g zewn. na skórę owłosioną do czasu całkowitego ustąpienia zmian"},
+            {"title":"MOCZNIK PIĘTY","category":"cat_inne","content":"SUCHE / ZGRUBIAŁE PIĘTY – maść z mocznikiem 50%, raz dziennie najlepiej przed snem wcierać w suchą skórę pięty"},
+            {"title":"RANY","category":"cat_inne","content":"Zalecenia dotyczące pielęgnacji rany:\n1. Rana oraz skóra wokół rany – umyć dokładnie mydłem potasowym, następnie osuszyć jałowym gazikiem.\n2. Oczyszczanie rany – zastosować przymoczek z PŁYNU Z ANTYBIOTYKIEM. Jałowy gazik obficie nasączyć preparatem i pozostawić na ranie przez co najmniej 15 minut.\n3. Pielęgnacja skóry wokół rany – brzegi rany oraz zmienioną chorobowo skórę posmarować maścią natłuszczającą.\n4. Przykryć opatrunek zasadniczy jałowymi gazikami i przytwierdzić plastrem/bandażem.\n5. Wymieniać opatrunek co 1-2 dni w zależności od obfitości wysięku z rany.\n\nZalecenia dodatkowe:\nSuplementacja białka w celu wspomagania i przyspieszenia gojenia rany (jeśli nie występuje niewydolność nerek) - preparaty bez recepty (np. Protifar proszek, Pellicar F kapsułki, NutriDrink płyn).\nSuplementacja witamin:\n- wit. C 1000 1 tabl. 1 raz dziennie\n- wit. A+E 1 tabl. 2 razy dziennie\n- wit. D3 2000j 1 tabl. 1x dziennie\n"},
+            {"title":"SUCHA SKÓRA + ODPARZENIA","category":"cat_inne","content":"SKÓRA + ODPARZENIA\n- OLIWKA - 1 x dziennie 100 g. zewnętrznie na całe ciało. Po wykorzystaniu całego olejku rozpocząć stosowanie balsamu do ciała.\n- BALSAM - stosować po każdej kąpieli na osuszoną skórę 30g na całe ciało.\n- KWAS BORNY - stosować 2 raz dziennie 40g do przemywania odparzenia każdorazowo przed zastosowaniem maści na zaczerwienienia oraz maści natłuszczającej do wyczerpania płynu.\n- MAŚĆ NA ZACZERWIENIENIA - maść stosować 2 razy dziennie 5g na dokładnie przemytą skórę w miejscach podatnych na odparzenia. Maść stosować i w całości wykorzystać przed rozpoczęciem stosowania maści natłuszczającej w celu leczenia oraz zapobieżenia powstawaniu zaczerwienień i odparzeń skóry.\n- MAŚĆ NATŁUSZCZAJĄCA - na dokładnie przemytą skórę (najlepiej mydłem potasowym) nakładać 2 razy dziennie po 5-7 g w pachwinach i pod fałdami skórnymi podatnymi na odparzenia.\n!!! Zaczerwienione pachwiny/fałdy skórne oddzielać jałowym gazikiem !!!\n"},
+            {"title":"pampersowani odparzenia bez m. natł.","category":"cat_inne","content":"SKÓRA + ODPARZENIA\n- BALSAM  - stosować po każdej kąpieli na osuszoną skórę 30g na całe ciało.\n- KWAS BORNY - stosować 2 raz dziennie 40g do przemywania odparzenia każdorazowo przed zastosowaniem maści na zaczerwienienia oraz maści natłuszczającej do wyczerpania płynu.\n- MAŚĆ NA ZACZERWIENIENIA - maść stosować 4 razy dziennie 5g na dokładnie przemytą skórę. Maść stosować i w całości wykorzystać w celu leczenia oraz zapobieżenia powstawaniu zaczerwienień i odparzeń skóry.\n"},
+            {"title":"pampersowani bez m. natł.","category":"cat_inne","content":"SKÓRA\n- BALSAM  - stosować po każdej kąpieli na osuszoną skórę 30g na całe ciało.\n- MAŚĆ NA ZACZERWIENIENIA - maść stosować 4 razy dziennie 5g na dokładnie przemytą skórę. Maść stosować i w całości wykorzystać w celu leczenia oraz zapobieżenia powstawaniu zaczerwienień i odparzeń skóry.\n"},
+            {"title":"MAŚĆ NA ŚWIĄD","category":"cat_inne","content":"MAŚĆ NA ŚWIĄD - 2-3 razy dziennie 3 gramy na zmiany skórne do czasu ustąpienia zmian, przez max. 3 miesiące\n"},
+            {"title":"MAŚĆ NATŁUSZCZAJĄCA na pięty","category":"cat_inne","content":"SUCHE PIĘTY - MAŚĆ NATŁUSZCZAJĄCA - 4-5 razy dziennie smarować suchą skórę pięt."},
+            {"title":"SKÓRA PERGAMINOWA","category":"cat_inne","content":"SKÓRA PERGAMINOWA – do suchej skóry/pampersowanych zmodyfikować/dodać:\n- OLIWKA - 1 x dziennie 100 g. zewnętrznie na całe ciało, SZCZEGÓLNIE NA MIEJSCA ZE SKÓRĄ PERGAMINOWĄ. Po wykorzystaniu całego olejku rozpocząć stosowanie balsamu do ciała.\n"},
+            {"title":"BIEGUNKA","category":"cat_inne","content":"BIEGUNKA - syrop 3 razy dziennie 5-7 g p.o po posiłku (ZMIESZAĆ PRZED UŻYCIEM)\n"}
         ];
 
         const defaultInterviews = [
-            {title: "W wywiadzie:", content: "W wywiadzie:"},
-            {title: "--- KOBIETA ---", content: ""},
-            {title: "Chodząca (K)", content: "Pacjentka chodząca."},
-            {title: "Leżąca (K)", content: "Pacjentka leżąca."},
-            {title: "Wózek (K)", content: "Pacjentka leżąca, wysadzana na wózek inwalidzki."},
-            {title: "Balkonik (K)", content: "Pacjentka chodząca przy pomocy balkonika."},
-            {title: "Z pomocą (K)", content: "Pacjentka chodząca z pomocą."},
-            {title: "--- MĘŻCZYZNA ---", content: ""},
-            {title: "Chodzący (M)", content: "Pacjent chodzący."},
-            {title: "Leżący (M)", content: "Pacjent leżący."},
-            {title: "Wózek (M)", content: "Pacjent leżący, wysadzany na wózek inwalidzki."},
-            {title: "Balkonik (M)", content: "Pacjent chodzący przy pomocy balkonika."},
-            {title: "Z pomocą (M)", content: "Pacjent chodzący z pomocą."},
-            {title: "--- KONTAKT ---", content: ""},
-            {title: "Logiczny", content: "W kontakcie słowno-logiczym."},
-            {title: "Ograniczony", content: "W ograniczonym kontakcie słowno-logicznym."},
-            {title: "Brak logiki", content: "Brak kontaktu słowno-logicznego."},
-            {title: "Słowny zachowany", content: "Brak kontaktu logicznego, kontakt słowny zachowany."}
+            {"title":"W wywiadzie:","content":"W wywiadzie:"},
+            {"title":"--- KOBIETA ---","content":""},
+            {"title":"Chodząca (K)","content":"Pacjentka chodząca."},
+            {"title":"Leżąca (K)","content":"Pacjentka leżąca."},
+            {"title":"Wózek (K)","content":"Pacjentka leżąca, wysadzana na wózek inwalidzki."},
+            {"title":"Balkonik (K)","content":"Pacjentka chodząca przy pomocy balkonika."},
+            {"title":"Z pomocą (K)","content":"Pacjentka chodząca z pomocą."},
+            {"title":"--- MĘŻCZYZNA ---","content":""},
+            {"title":"Chodzący (M)","content":"Pacjent chodzący."},
+            {"title":"Leżący (M)","content":"Pacjent leżący."},
+            {"title":"Wózek (M)","content":"Pacjent leżący, wysadzany na wózek inwalidzki."},
+            {"title":"Balkonik (M)","content":"Pacjent chodzący przy pomocy balkonika."},
+            {"title":"Z pomocą (M)","content":"Pacjent chodzący z pomocą."},
+            {"title":"--- KONTAKT ---","content":""},
+            {"title":"Logiczny","content":"W kontakcie słowno-logiczym."},
+            {"title":"Ograniczony","content":"W ograniczonym kontakcie słowno-logicznym."},
+            {"title":"Brak logiki","content":"Brak kontaktu słowno-logicznego."},
+            {"title":"Słowny zachowany","content":"Brak kontaktu logicznego. bez słowno-, kontakt słowny zachowany."}
         ];
 
         // --- STAN ---
-        let words = JSON.parse(localStorage.getItem('med_words_v3')) || defaultWords;
-        let recs = JSON.parse(localStorage.getItem('med_recs_v3')) || defaultRecs;
-        let interviews = JSON.parse(localStorage.getItem('med_int_v3')) || defaultInterviews;
+        let words = JSON.parse(localStorage.getItem('med_words_v8')) || defaultWords;
+        let categories = JSON.parse(localStorage.getItem('med_cats_v8')) || defaultCategories;
+        let recs = JSON.parse(localStorage.getItem('med_recs_v8')) || defaultRecs;
+        let interviews = JSON.parse(localStorage.getItem('med_int_v8')) || defaultInterviews;
         
         let configType = 'recs'; 
         let editingIndex = null;
 
         function saveData() {
-            localStorage.setItem('med_words_v3', JSON.stringify(words));
-            localStorage.setItem('med_recs_v3', JSON.stringify(recs));
-            localStorage.setItem('med_int_v3', JSON.stringify(interviews));
+            localStorage.setItem('med_words_v8', JSON.stringify(words));
+            localStorage.setItem('med_cats_v8', JSON.stringify(categories));
+            localStorage.setItem('med_recs_v8', JSON.stringify(recs));
+            localStorage.setItem('med_int_v8', JSON.stringify(interviews));
             render();
-            renderConfigList();
+            if(document.getElementById('config-view').style.display !== 'none') {
+                renderConfigList();
+                updateCategorySelect();
+            }
         }
 
         // --- RENDEROWANIE GŁÓWNE ---
@@ -405,16 +452,62 @@
                 wCont.appendChild(btn);
             });
 
-            // Zalecenia
+            // Zalecenia - KATEGORIE
             const rCont = document.getElementById('recs-container');
             rCont.innerHTML = '';
-            recs.forEach(item => {
-                const btn = document.createElement('button');
-                btn.className = 'btn-action';
-                btn.innerText = item.title;
-                btn.onclick = () => appendText(item.content);
-                rCont.appendChild(btn);
+            
+            const allCatIds = categories.map(c => c.id);
+
+            categories.forEach(cat => {
+                const catRecs = recs.filter(r => r.category === cat.id);
+                
+                // Zawsze renderuj nagłówek kategorii, nawet puste
+                const divCat = document.createElement('div');
+                divCat.className = 'category-header';
+                divCat.innerHTML = `<span>${cat.name}</span><hr>`;
+                rCont.appendChild(divCat);
+
+                const grid = document.createElement('div');
+                grid.className = 'buttons-grid';
+                
+                if(catRecs.length > 0) {
+                    catRecs.forEach(item => {
+                        const btn = document.createElement('button');
+                        btn.className = 'btn-action';
+                        btn.innerText = item.title;
+                        btn.onclick = () => appendText(item.content);
+                        grid.appendChild(btn);
+                    });
+                } else {
+                    const emptyMsg = document.createElement('span');
+                    emptyMsg.style.fontSize = '0.75rem';
+                    emptyMsg.style.color = 'var(--text-muted)';
+                    emptyMsg.style.fontStyle = 'italic';
+                    emptyMsg.innerText = 'Brak zaleceń w tej kategorii...';
+                    grid.appendChild(emptyMsg);
+                }
+                rCont.appendChild(grid);
             });
+
+            // "Sieroty" (Zalecenia bez kategorii lub jeśli kategoria została usunięta)
+            const orphanedRecs = recs.filter(r => !allCatIds.includes(r.category));
+            if(orphanedRecs.length > 0) {
+                const divCat = document.createElement('div');
+                divCat.className = 'category-header';
+                divCat.innerHTML = `<span>Bez kategorii</span><hr>`;
+                rCont.appendChild(divCat);
+
+                const grid = document.createElement('div');
+                grid.className = 'buttons-grid';
+                orphanedRecs.forEach(item => {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn-action';
+                    btn.innerText = item.title;
+                    btn.onclick = () => appendText(item.content);
+                    grid.appendChild(btn);
+                });
+                rCont.appendChild(grid);
+            }
 
             // Wywiady
             const iCont = document.getElementById('int-container');
@@ -440,13 +533,12 @@
             });
         }
 
-        // --- ZAKŁADKI (TABS) ---
         function switchTab(tab) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.getElementById('tab-' + tab).classList.add('active');
             
             if(tab === 'recs') {
-                document.getElementById('recs-container').style.display = 'flex';
+                document.getElementById('recs-container').style.display = 'block';
                 document.getElementById('int-container').style.display = 'none';
             } else {
                 document.getElementById('recs-container').style.display = 'none';
@@ -485,7 +577,7 @@
             const conf = document.getElementById('config-view');
             const btn = document.getElementById('toggle-btn');
             
-            cancelEditContent(); // Reset
+            cancelEditContent();
 
             if (main.style.display === 'none') {
                 main.style.display = 'flex';
@@ -495,13 +587,13 @@
             } else {
                 main.style.display = 'none';
                 conf.style.display = 'flex';
+                updateCategorySelect();
                 renderConfigList();
                 btn.innerText = 'Wróć';
                 btn.className = 'btn-action';
             }
         }
 
-        // Konf: Słowa
         function addWord() {
             const input = document.getElementById('new-word-input');
             const val = input.value.trim();
@@ -515,22 +607,72 @@
         function deleteWord(idx) { words.splice(idx, 1); saveData(); }
         document.getElementById('new-word-input').addEventListener('keypress', (e)=>{if(e.key==='Enter') addWord()});
 
-        // Konf: Treści (Zalecenia/Wywiady)
+        // Konf: Sortowanie kategorii
+        function moveCatUp(idx) {
+            if (idx <= 0) return;
+            const temp = categories[idx - 1];
+            categories[idx - 1] = categories[idx];
+            categories[idx] = temp;
+            saveData();
+        }
+        function moveCatDown(idx) {
+            if (idx >= categories.length - 1) return;
+            const temp = categories[idx + 1];
+            categories[idx + 1] = categories[idx];
+            categories[idx] = temp;
+            saveData();
+        }
+
+        function updateCategorySelect() {
+            const sel = document.getElementById('new-content-category');
+            sel.innerHTML = '';
+            categories.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat.id;
+                opt.innerText = cat.name;
+                sel.appendChild(opt);
+            });
+            if(categories.find(c => c.id === 'cat_inne')) {
+                sel.value = 'cat_inne';
+            } else if (categories.length > 0) {
+                sel.value = categories[0].id;
+            }
+        }
+
         function changeConfigType() {
             configType = document.getElementById('content-type-select').value;
             cancelEditContent();
             renderConfigList();
             
-            // Zmiana kolorów formularza dla rozróżnienia
             const form = document.getElementById('content-form');
-            if(configType === 'int') form.classList.add('interview-mode');
-            else form.classList.remove('interview-mode');
+            const catSelect = document.getElementById('new-content-category');
+            const bodyInput = document.getElementById('new-content-body');
+            const titleInput = document.getElementById('new-content-title');
 
-            document.getElementById('edit-mode-label').innerText = configType === 'recs' ? "Zalecenia" : "Wywiady";
+            form.classList.remove('interview-mode', 'cats-mode');
+            catSelect.style.display = 'none';
+            bodyInput.style.display = 'block';
+
+            if(configType === 'int') {
+                form.classList.add('interview-mode');
+                document.getElementById('edit-mode-label').innerText = "Wywiady";
+                titleInput.placeholder = "Tytuł przycisku (np. Pacjent Chodzący)";
+            } 
+            else if(configType === 'cats') {
+                form.classList.add('cats-mode');
+                document.getElementById('edit-mode-label').innerText = "Kategorie Zaleceń";
+                titleInput.placeholder = "Nazwa nowej kategorii (np. Antybiotyki)";
+                bodyInput.style.display = 'none'; 
+            } 
+            else { 
+                document.getElementById('edit-mode-label').innerText = "Zalecenia";
+                titleInput.placeholder = "Tytuł przycisku (np. SUCHA SKÓRA)";
+                catSelect.style.display = 'block';
+                updateCategorySelect();
+            }
         }
 
         function renderConfigList() {
-            // Słowa
             const wl = document.getElementById('config-words-list');
             wl.innerHTML = '';
             words.forEach((w, i) => {
@@ -540,27 +682,42 @@
                 wl.appendChild(div);
             });
 
-            // Treści
             const cl = document.getElementById('config-content-list');
             cl.innerHTML = '';
-            const listData = configType === 'recs' ? recs : interviews;
-            const badgeClass = configType === 'recs' ? 'badge-rec' : 'badge-int';
-            const badgeText = configType === 'recs' ? 'ZAL' : 'WYW';
+            
+            let listData = [];
+            let badgeClass = '';
+            let badgeText = '';
+
+            if (configType === 'recs') { listData = recs; badgeClass = 'badge-rec'; badgeText = 'ZAL'; }
+            else if (configType === 'int') { listData = interviews; badgeClass = 'badge-int'; badgeText = 'WYW'; }
+            else if (configType === 'cats') { listData = categories; badgeClass = 'badge-cat'; badgeText = 'KAT'; }
 
             listData.forEach((item, i) => {
                 const div = document.createElement('div');
                 div.className = 'config-list-item';
+                
+                const dispTitle = configType === 'cats' ? item.name : item.title;
+                const dispContent = configType === 'cats' ? `Kategoria` : (item.content || '(Separator/Pusty)');
+
+                let controlsHtml = '';
+                if (configType === 'cats') {
+                    controlsHtml += `<button class="btn-icon" onclick="moveCatUp(${i})" ${i === 0 ? 'disabled' : ''}>▲</button>`;
+                    controlsHtml += `<button class="btn-icon" onclick="moveCatDown(${i})" ${i === listData.length - 1 ? 'disabled' : ''}>▼</button>`;
+                }
+                controlsHtml += `<button class="btn-edit" onclick="startEditContent(${i})">Edytuj</button>`;
+                controlsHtml += `<button class="btn-delete" onclick="deleteContent(${i})">Usuń</button>`;
+
                 div.innerHTML = `
                     <div class="rec-item-preview" onclick="startEditContent(${i})">
                         <div style="display:flex; align-items:center;">
                             <span class="type-badge ${badgeClass}">${badgeText}</span>
-                            <span class="rec-title">${item.title}</span>
+                            <span class="rec-title">${dispTitle}</span>
                         </div>
-                        <span class="rec-desc">${item.content || '(Separator/Pusty)'}</span>
+                        <span class="rec-desc">${dispContent}</span>
                     </div>
-                    <div>
-                        <button class="btn-edit" onclick="startEditContent(${i})">Edytuj</button>
-                        <button class="btn-delete" onclick="deleteContent(${i})">Usuń</button>
+                    <div style="display:flex; align-items:center;">
+                        ${controlsHtml}
                     </div>
                 `;
                 cl.appendChild(div);
@@ -568,33 +725,62 @@
         }
 
         function handleContentSubmit() {
-            const title = document.getElementById('new-content-title').value.trim();
+            const titleInput = document.getElementById('new-content-title');
+            const title = titleInput.value.trim();
             const content = document.getElementById('new-content-body').value; 
+            const category = document.getElementById('new-content-category').value;
             
-            if(!title) return alert("Podaj tytuł!");
+            if(!title) return alert("Podaj nazwę/tytuł!");
 
-            const list = configType === 'recs' ? recs : interviews;
-
-            if(editingIndex !== null) {
-                list[editingIndex] = { title, content };
-                showToast("Zaktualizowano");
-                cancelEditContent();
+            if (configType === 'cats') {
+                if(editingIndex !== null) {
+                    categories[editingIndex].name = title;
+                    showToast("Zaktualizowano kategorię");
+                } else {
+                    const newId = 'cat_' + Math.random().toString(36).substr(2, 6);
+                    categories.push({ id: newId, name: title });
+                    showToast("Dodano kategorię");
+                }
             } else {
-                list.push({ title, content });
-                showToast("Dodano");
-                document.getElementById('new-content-title').value = '';
-                document.getElementById('new-content-body').value = '';
+                const list = configType === 'recs' ? recs : interviews;
+                
+                let newItem = { title, content };
+                if (configType === 'recs') newItem.category = category;
+
+                if(editingIndex !== null) {
+                    list[editingIndex] = newItem;
+                    showToast("Zaktualizowano");
+                } else {
+                    list.push(newItem);
+                    showToast("Dodano");
+                }
             }
+            
+            cancelEditContent();
             saveData();
         }
 
         function startEditContent(idx) {
             editingIndex = idx;
-            const list = configType === 'recs' ? recs : interviews;
-            const item = list[idx];
             
-            document.getElementById('new-content-title').value = item.title;
-            document.getElementById('new-content-body').value = item.content;
+            const titleInput = document.getElementById('new-content-title');
+            const bodyInput = document.getElementById('new-content-body');
+            const catSelect = document.getElementById('new-content-category');
+
+            if (configType === 'cats') {
+                const item = categories[idx];
+                titleInput.value = item.name;
+            } else {
+                const list = configType === 'recs' ? recs : interviews;
+                const item = list[idx];
+                titleInput.value = item.title;
+                bodyInput.value = item.content;
+                
+                if (configType === 'recs') {
+                    updateCategorySelect();
+                    catSelect.value = item.category || 'cat_inne';
+                }
+            }
             
             document.getElementById('btn-save-content').innerText = "Zapisz Zmiany";
             document.getElementById('btn-cancel-content').style.display = "inline-block";
@@ -609,13 +795,24 @@
             document.getElementById('btn-save-content').innerText = "Dodaj";
             document.getElementById('btn-cancel-content').style.display = "none";
             document.getElementById('content-form').classList.remove('editing');
+            
+            if (configType === 'recs') {
+                const sel = document.getElementById('new-content-category');
+                if(categories.find(c => c.id === 'cat_inne')) sel.value = 'cat_inne';
+                else if (categories.length > 0) sel.value = categories[0].id;
+            }
         }
 
         function deleteContent(idx) {
             if(confirm("Usunąć element?")) {
-                const list = configType === 'recs' ? recs : interviews;
                 if(editingIndex === idx) cancelEditContent();
-                list.splice(idx, 1);
+
+                if (configType === 'cats') {
+                    categories.splice(idx, 1);
+                } else {
+                    const list = configType === 'recs' ? recs : interviews;
+                    list.splice(idx, 1);
+                }
                 saveData();
             }
         }
